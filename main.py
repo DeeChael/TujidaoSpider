@@ -2,6 +2,7 @@
 
 import os
 import random
+import threading
 import time
 
 import requests
@@ -40,6 +41,9 @@ users = [('Spider_1', 'spider123', '344640'),
          ('Spider_5', 'spider123', '344644')]
 
 
+_global = dict()
+
+
 def download_updated(page, limit: int = -1):
     if int(page) == 0:
         downloading_page = 1
@@ -47,6 +51,9 @@ def download_updated(page, limit: int = -1):
             if limit != -1:
                 if downloading_page > limit:
                     break
+            if 'stopped' in _global:
+                print('已终止下载')
+                return True
             print("===================================")
             print('开始下载第 ' + str(downloading_page) + ' 页')
             if not (os.path.exists(f'第 {downloading_page} 页') and os.path.isdir(f'第 {downloading_page} 页')):
@@ -59,8 +66,12 @@ def download_updated(page, limit: int = -1):
                 if len(articles) == 0 or len(titles) == 0:
                     break
                 for i in range(0, len(articles)):
+                    if 'stopped' in _global:
+                        print('已终止下载')
+                        return True
                     article_link_prefix = str(articles[i]).rsplit('/', 1)[0] + '/'
                     title = titles[i].text
+                    os.system("title " + '正在下载： 最新 无限下载 - 第 ' + str(downloading_page) + '页 - ' + title)
                     o = 0
                     if not (os.path.exists(f'第 {downloading_page} 页/' + title) and os.path.isdir(
                             f'第 {downloading_page} 页/' + title)):
@@ -68,6 +79,9 @@ def download_updated(page, limit: int = -1):
                     print('-----------------------------------')
                     print('正在下载 ' + title)
                     while True:
+                        if 'stopped' in _global:
+                            print('已终止下载')
+                            return True
                         picture_response = requests.get(article_link_prefix + str(o) + '.jpg', headers=headers,
                                                         verify=False, proxies={"http": None, "https": None},
                                                         stream=True)
@@ -98,14 +112,21 @@ def download_updated(page, limit: int = -1):
                 print('你输入的页数太大或太小了！')
                 return False
             for i in range(0, len(articles)):
+                if 'stopped' in _global:
+                    print('已终止下载')
+                    return True
                 article_link_prefix = str(articles[i]).rsplit('/', 1)[0] + '/'
                 title = titles[i].text
+                os.system("title " + '正在下载： 最新 - 第 ' + page + '页 - ' + title)
                 o = 0
                 if not (os.path.exists(title) and os.path.isdir(title)):
                     os.mkdir(title)
                 print('-----------------------------------')
                 print('正在下载 ' + title)
                 while True:
+                    if 'stopped' in _global:
+                        print('已终止下载')
+                        return True
                     picture_response = requests.get(article_link_prefix + str(o) + '.jpg', headers=headers,
                                                     verify=False, proxies={"http": None, "https": None},
                                                     stream=True)
@@ -130,13 +151,16 @@ def download_updated(page, limit: int = -1):
     return True
 
 
-def download_category(category_id, page, limit: int = -1):
+def download_category(category_id, page, category_name: str, limit: int = -1):
     if int(page) == 0:
         downloading_page = 1
         while True:
             if limit != -1:
                 if downloading_page > limit:
                     break
+            if 'stopped' in _global:
+                print('已终止下载')
+                return True
             print("===================================")
             print('开始下载第 ' + str(downloading_page) + ' 页')
             if not (os.path.exists(f'第 {downloading_page} 页') and os.path.isdir(f'第 {downloading_page} 页')):
@@ -149,8 +173,12 @@ def download_category(category_id, page, limit: int = -1):
                 if len(articles) == 0 or len(titles) == 0:
                     break
                 for i in range(0, len(articles)):
+                    if 'stopped' in _global:
+                        print('已终止下载')
+                        return True
                     article_link_prefix = str(articles[i]).rsplit('/', 1)[0] + '/'
                     title = titles[i].text
+                    os.system("title " + '正在下载： 分类 无限 [' + category_name + '] - 第 ' + str(downloading_page) + '页 - ' + title)
                     o = 0
                     if not (os.path.exists(f'第 {downloading_page} 页/' + title) and os.path.isdir(
                             f'第 {downloading_page} 页/' + title)):
@@ -158,6 +186,9 @@ def download_category(category_id, page, limit: int = -1):
                     print('-----------------------------------')
                     print('正在下载 ' + title)
                     while True:
+                        if 'stopped' in _global:
+                            print('已终止下载')
+                            return True
                         picture_response = requests.get(article_link_prefix + str(o) + '.jpg', headers=headers,
                                                         verify=False, proxies={"http": None, "https": None},
                                                         stream=True)
@@ -188,14 +219,21 @@ def download_category(category_id, page, limit: int = -1):
                 print('你输入的页数太大或太小了！')
                 return False
             for i in range(0, len(articles)):
+                if 'stopped' in _global:
+                    print('已终止下载')
+                    return True
                 article_link_prefix = str(articles[i]).rsplit('/', 1)[0] + '/'
                 title = titles[i].text
+                os.system("title " + '正在下载： 分类 [' + category_name + '] - 第 ' + page + '页 - ' + title)
                 o = 0
                 if not (os.path.exists(title) and os.path.isdir(title)):
                     os.mkdir(title)
                 print('-----------------------------------')
                 print('正在下载 ' + title)
                 while True:
+                    if 'stopped' in _global:
+                        print('已终止下载')
+                        return True
                     picture_response = requests.get(article_link_prefix + str(o) + '.jpg', headers=headers,
                                                     verify=False, proxies={"http": None, "https": None},
                                                     stream=True)
@@ -224,6 +262,9 @@ def main():
     print("！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！")
     print('！！！本项目仅用于学习，下载图片间隔必须大于1s，下载后请在24小时内删除，请自行承担法律责任！！！')
     print("！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！")
+    print("！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！")
+    print('！！！下载过程中输入“stop”并按回车（速度要快），即可停止，但是有时会失效，请尝试多输入几次！！！')
+    print("！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！")
     input('按下回车开始使用')
 
     # Login a account first
@@ -239,7 +280,8 @@ def main():
         print('0 - 全部')
         print('1 - 分类')
         print('2 - 全部 无限下载')
-        print('3 - 分类 无限下载\n')
+        print('3 - 分类 无限下载')
+        print('4 - 特定coser\n')
         sort_method = input('请输入你的爬取方式：')
         if sort_method == '0':
 
@@ -250,6 +292,7 @@ def main():
             if int(page) < 1:
                 print('请输入一个大于0的整数！')
                 return
+            threading.Thread(target=stop).start()
             if download_updated(page):
                 print('下载完成！')
             else:
@@ -292,7 +335,8 @@ def main():
                 if int(page) < 1:
                     print('请输入一个大于0的整数！')
                     return
-                if download_category(cate_link_map[selected_category]['id'], page):
+                threading.Thread(target=stop).start()
+                if download_category(cate_link_map[selected_category]['id'], page, cate_link_map[selected_category]['name']):
                     print('下载完成！')
                 else:
                     print('下载失败')
@@ -307,17 +351,20 @@ def main():
                     print('由于你整数小于0，因此认为你不设限制')
                     print('由于你输入并不是一个合法的整数，因此认为你不设限制')
                     input('按下回车确认')
+                    threading.Thread(target=stop).start()
                     if download_updated(0):
                         print('下载完成！')
                     else:
                         print('下载失败')
                 else:
                     if int(limit) == 0:
+                        threading.Thread(target=stop).start()
                         if download_updated(0):
                             print('下载完成！')
                         else:
                             print('下载失败')
                     else:
+                        threading.Thread(target=stop).start()
                         if download_updated(0, int(limit)):
                             print('下载完成！')
                         else:
@@ -325,6 +372,7 @@ def main():
             else:
                 print('由于你输入并不是一个合法的整数，因此认为你不设限制')
                 input('按下回车确认')
+                threading.Thread(target=stop).start()
                 if download_updated(0):
                     print('下载完成！')
                 else:
@@ -365,38 +413,102 @@ def main():
                         print('由于你整数小于0，因此认为你不设限制')
                         print('由于你输入并不是一个合法的整数，因此认为你不设限制')
                         input('按下回车确认')
-                        if download_category(cate_link_map[selected_category]['id'], 0):
+                        threading.Thread(target=stop).start()
+                        if download_category(cate_link_map[selected_category]['id'], 0, cate_link_map[selected_category]['name']):
                             print('下载完成！')
                         else:
                             print('下载失败')
                     else:
                         if int(limit) == 0:
-                            if download_category(cate_link_map[selected_category]['id'], 0):
+                            threading.Thread(target=stop).start()
+                            if download_category(cate_link_map[selected_category]['id'], 0, cate_link_map[selected_category]['name']):
                                 print('下载完成！')
                             else:
                                 print('下载失败')
                         else:
-                            if download_category(cate_link_map[selected_category]['id'], 0, int(limit)):
+                            threading.Thread(target=stop).start()
+                            if download_category(cate_link_map[selected_category]['id'], 0, cate_link_map[selected_category]['name'], int(limit)):
                                 print('下载完成！')
                             else:
                                 print('下载失败')
                 else:
                     print('由于你输入并不是一个合法的整数，因此认为你不设限制')
                     input('按下回车确认')
-                    if download_category(cate_link_map[selected_category]['id'], 0):
+                    threading.Thread(target=stop).start()
+                    if download_category(cate_link_map[selected_category]['id'], 0, cate_link_map[selected_category]['name']):
                         print('下载完成！')
                     else:
                         print('下载失败')
             else:
                 print('获取失败')
             ...
-
+        elif sort_method == '4':
+            print('------------ Coser ------------')
+            print('0 - 蠢萌萌')
+            coser = input('请输入你要下载的套图的Coser：')
+            if coser == '0':
+                response = session.get('https://www.tujidao.com/sousu/?s0=%E8%A0%A2%E6%B2%AB%E6%B2%AB')
+                if response.status_code == 200:
+                    if not (os.path.exists('蠢萌萌') and os.path.isdir('蠢萌萌')):
+                        os.mkdir('蠢萌萌')
+                    html = etree.HTML(response.content)
+                    articles = html.xpath("/html/body/div[@class='hezi']/ul[@id='search']/li/a/img/@src")
+                    titles = html.xpath("/html/body/div[@class='hezi']/ul[@id='search']/li/p[@class='biaoti']/a")
+                    if len(articles) == 0 or len(titles) == 0:
+                        print('哎呀呀！似乎出了点问题！')
+                        return
+                    for i in range(0, len(articles)):
+                        if 'stopped' in _global:
+                            print('已终止下载')
+                            return True
+                        article_link_prefix = str(articles[i]).rsplit('/', 1)[0] + '/'
+                        title = titles[i].text
+                        os.system("title " + '正在下载： Coser - 蠢萌萌 - ' + title + ' - 已下载 ' + str(i))
+                        o = 0
+                        if not (os.path.exists('蠢萌萌/' + title) and os.path.isdir('蠢萌萌/' + title)):
+                            os.mkdir('蠢萌萌/' + title)
+                        print('-----------------------------------')
+                        print('正在下载 ' + title)
+                        while True:
+                            if 'stopped' in _global:
+                                print('已终止下载')
+                                return True
+                            picture_response = requests.get(article_link_prefix + str(o) + '.jpg', headers=headers,
+                                                            verify=False, proxies={"http": None, "https": None},
+                                                            stream=True)
+                            if picture_response.status_code == 200:
+                                if os.path.exists('蠢萌萌/' + title + "/" + str(o) + '.jpg') and os.path.isfile(
+                                        '蠢萌萌/' + title + "/" + str(o) + '.jpg'):
+                                    print('你已下载过第' + str(o) + '张')
+                                    o += 1
+                                    continue
+                                else:
+                                    with open('蠢萌萌/' + title + "/" + str(o) + '.jpg', 'wb') as f:
+                                        f.write(picture_response.content)
+                                    o += 1
+                                    print('正在下载第 ' + str(o) + ' 张')
+                                take_a_break()
+                            else:
+                                break
+                        print('-----------------------------------')
+                else:
+                    print('获取失败')
+                    return False
+            else:
+                print('未知的Coser')
         else:
             print('未知的方法')
         ...
     else:
         print('登录失败')
     ...
+
+
+def stop():
+    while True:
+        command = input()
+        if 'stop' in command.lower():
+            _global['stopped'] = True
 
 
 def is_int(sth) -> bool:

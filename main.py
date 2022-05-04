@@ -27,7 +27,8 @@ headers = {"Content-Type": "application/json", 'user-agent': 'Mozilla/5.0 (Windo
            'sec-fetch-site': 'none',
            'sec-fetch-user': '?1',
            'upgrade-insecure-requests': '1',
-           'X-Real-IP': '211.161.244.70'
+           'X-Real-IP': '211.161.244.70',
+           'Referer': 'https://www.tujidao.com/'
            }
 
 urllib3.disable_warnings()
